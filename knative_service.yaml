@@ -47,3 +47,30 @@ data:
     \ = \"root\"\n\n[httpClients]\n  verifyHostname=true"
 
 ---
+
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: "wso2-mgw-3"
+  namespace: knative
+spec:
+  template:
+    spec:
+      containers:
+      - image: "uvindu96/k8s_project3:latest"
+        env:
+        - name: "CONFIG_FILE"
+          value: "/home/ballerina/conf/ballerina.conf"
+        envFrom: []
+        ports:
+          - containerPort: 8080
+            protocol: "TCP"
+        volumeMounts:
+          - name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
+            mountPath: "/home/ballerina/conf/"
+            readOnly: false
+      volumes:
+      - configMap:
+          items: []
+          name: "worldbank--1-0-0-ballerina-conf-config-map"
+        name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
