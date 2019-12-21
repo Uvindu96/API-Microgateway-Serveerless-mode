@@ -1,4 +1,4 @@
- apiVersion: "v1"
+apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
   annotations: {}
@@ -7,7 +7,8 @@ metadata:
   name: "worldbank--1-0-0-ballerina-conf-config-map"
   ownerReferences: []
 data:
-  ballerina.conf: "[listenerConfig]\nhost=\"0.0.0.0\"\nhttpPort=8080\nhttpsPort=9095\n\
+  ballerina.conf:
+    "[listenerConfig]\nhost=\"0.0.0.0\"\nhttpPort=8080\nhttpsPort=9095\n\
     keyStore.path=\"${ballerina.home}/bre/security/ballerinaKeystore.p12\"\nkeyStore.password=\"\
     ballerina\"\ntrustStore.path=\"${ballerina.home}/bre/security/ballerinaTruststore.p12\"\
     \ntrustStore.password=\"ballerina\"\ntokenListenerPort=9096\n\n[authConfig]\n\
@@ -47,7 +48,6 @@ data:
     \ = \"root\"\n\n[httpClients]\n  verifyHostname=true"
 
 ---
-
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
@@ -57,20 +57,20 @@ spec:
   template:
     spec:
       containers:
-      - image: "uvindu96/k8s_project3:latest"
-        env:
-        - name: "CONFIG_FILE"
-          value: "/home/ballerina/conf/ballerina.conf"
-        envFrom: []
-        ports:
-          - containerPort: 8080
-            protocol: "TCP"
-        volumeMounts:
-          - name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
-            mountPath: "/home/ballerina/conf/"
-            readOnly: false
+        - image: "uvindu96/k8s_project3:latest"
+          env:
+            - name: "CONFIG_FILE"
+              value: "/home/ballerina/conf/ballerina.conf"
+          envFrom: []
+          ports:
+            - containerPort: 8080
+              protocol: "TCP"
+          volumeMounts:
+            - name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
+              mountPath: "/home/ballerina/conf/"
+              readOnly: false
       volumes:
-      - configMap:
-          items: []
-          name: "worldbank--1-0-0-ballerina-conf-config-map"
-        name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
+        - configMap:
+            items: []
+            name: "worldbank--1-0-0-ballerina-conf-config-map"
+          name: "worldbank--1-0-0-ballerina-conf-config-map-volume"
