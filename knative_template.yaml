@@ -1,0 +1,83 @@
+# this is a template yaml file for deploy WSO2 API microgateway
+# in serverless mode using knative
+
+#ConfigMap for the gateway
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  annotations: {}
+  finalizers: []
+  labels: {}
+  name: ""
+  ownerReferences: []
+data:
+  ballerina.conf:
+    "[listenerConfig]\nhost=\"0.0.0.0\"\nhttpPort=8080\nhttpsPort=9095\n\
+    keyStore.path=\"${ballerina.home}/bre/security/ballerinaKeystore.p12\"\nkeyStore.password=\"\
+    ballerina\"\ntrustStore.path=\"${ballerina.home}/bre/security/ballerinaTruststore.p12\"\
+    \ntrustStore.password=\"ballerina\"\ntokenListenerPort=9096\n\n[authConfig]\n\
+    authorizationHeader=\"Authorization\"\nremoveAuthHeaderFromOutMessage=true\n\n\
+    [keyManager]\nserverUrl=\"https://localhost:9443\"\nusername=\"admin\"\npassword=\"\
+    admin\"\ntokenContext=\"oauth2\"\ntimestampSkew=5000\n\n\n[jwtTokenConfig]\nissuer=\"\
+    https://localhost:9443/oauth2/token\"\naudience=\"http://org.wso2.apimgt/gateway\"\
+    \ncertificateAlias=\"wso2apim\"\n\n\n[jwtConfig]\nheader=\"X-JWT-Assertion\"\n\
+    \n[caching]\nenabled=true\ntokenCache.expiryTime=900000\ntokenCache.capacity=10000\n\
+    tokenCache.evictionFactor=0.25\n\n[analytics]\nenable=false\nuploadingTimeSpanInMillis=600000\n\
+    uploadingEndpoint=\"https://localhost:9444/analytics/v1.0/usage/upload-file\"\n\
+    rotatingPeriod=600000\ntask.uploadFiles=true\nusername=\"admin\"\npassword=\"\
+    admin\"\n\n[http2]\nenable=false\n\n[mutualSSLConfig]\nprotocolName=\"TLS\"\n\
+    protocolVersions=\"TLSv1.2,TLSv1.1\"\nciphers=\"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,\
+    \ TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,\
+    \ TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,\
+    \ TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA,\
+    \ TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,\
+    \ TLS_DHE_DSS_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256\
+    \  ,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256,\
+    \ TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_GCM_SHA256\
+    \  ,TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA,TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,SSL_RSA_WITH_3DES_EDE_CBC_SHA,\
+    \ TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA,TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA,SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA,\
+    \ SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA,TLS_EMPTY_RENEGOTIATION_INFO_SCSV\"\nsslVerifyClient=\"\
+    optional\"\n\n[\"b7a.users\"]\n[\"b7a.users.generalUser1\"]\npassword=\"5BAA61E4C9B93F3F0682250B6CF8331B7EE68FD8\"\
+    \n\n[validationConfig]\nenableRequestValidation = false\nenableResponseValidation\
+    \ = false\n\n\n[throttlingConfig]\nenabledGlobalTMEventPublishing = false\njmsConnectioninitialContextFactory\
+    \ = \"bmbInitialContextFactory\"\njmsConnectionProviderUrl= \"amqp://admin:admin@carbon/carbon?brokerlist='tcp://localhost:5672'\"\
+    \njmsConnectionUsername = \"\"\njmsConnectionPassword = \"\"\nthrottleEndpointUrl\
+    \ = \"https://localhost:9443/endpoints\"\nthrottleEndpointbase64Header = \"admin:admin\"\
+    \n\n[tokenRevocationConfig]\n  [tokenRevocationConfig.realtime]\n    enableRealtimeMessageRetrieval\
+    \ = false\n    jmsConnectionTopic = \"tokenRevocation\"\n    jmsConnectioninitialContextFactory\
+    \ = \"bmbInitialContextFactory\"\n    jmsConnectionProviderUrl= \"amqp://admin:admin@carbon/carbon?brokerlist='tcp://localhost:5672'\"\
+    \n    jmsConnectionUsername = \"\"\n    jmsConnectionPassword = \"\"\n  [tokenRevocationConfig.persistent]\n\
+    \    enablePersistentStorageRetrieval = false\n    useDefault = true\n    hostname\
+    \ = \"https://127.0.0.1:2379/v2/keys/jti/\"\n    username = \"root\"\n    password\
+    \ = \"root\"\n\n[httpClients]\n  verifyHostname=true"
+
+---
+# service spec for the knative deployment
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: ""
+  namespace: ""
+spec:
+  template:
+    spec:
+      containers:
+        - image: "<docker_hub_ID/image_name"
+          env:
+            - name: ""
+              value: ""
+          envFrom: []
+          ports:
+            # you can change the container port without using the knative
+            # reserved ports
+            - containerPort: 8080
+              protocol: "TCP"
+          volumeMounts:
+            - name: ""
+              mountPath: ""
+              readOnly: false
+      volumes:
+        - configMap:
+            items: []
+            name: ""
+          name: ""
